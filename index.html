@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- <meta name="description" -->
+        <!-- content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos."> -->
+  <!-- <meta name="keywords" content="Nerfies, D-NeRF, NeRF"> -->
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+  <title>Test3R: Learning to Reconstruct 3D at Test Time</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/styles.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="about:blank">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    body {
+  display: flex;
+  flex-direction: column; /* 让子元素垂直排列 */
+  justify-content: center; /* 垂直方向居中 */
+  align-items: center;     /* 水平方向居中 */
+  padding: 40px;
+}
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;      /* 允许换行 */
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  position: relative;
+  width: 400px;            /* 卡片宽度 */
+  height: 400px;           /* 卡片高度 */
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #4669a3;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  z-index: 10;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+model-viewer {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+  </style>
+  
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <script
+  defer
+  src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"
+></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css"
+/>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Test3R: Learning to Reconstruct 3D <br>at Test Time</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=_NkbonQAAAAJ">Yuheng Yuan</a>,</span>
+            <span class="author-block">
+              <a href="https://florinshen.github.io/">Qiuhong Shen</a>,</span>
+            <span class="author-block">
+              <a href="https://littlepure2333.github.io/home/">Shizun Wang</a>,</span>
+            <span class="author-block">
+              <a href="https://adamdad.github.io/">Xingyi Yang</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://sites.google.com/site/sitexinchaowang/">Xinchao Wang</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">National University of Singapore</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+        
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          Dense matching methods like DUST3R regress pairwise pointmaps for 3D reconstruction. 
+          However, the reliance on pairwise prediction and the limited generalization capability inherently restrict the global geometric consistency. 
+          In this work, we introduce <b>Test3R</b>, a surprisingly simple test-time learning technique that significantly boosts geometric accuracy. 
+          Using image triplets \((I_1,I_2,I_3\)), Test3R generates reconstructions from pairs \((I_1,I_2\)) and \((I_1,I_3\)). 
+          The core idea is to optimize the network at test time via a self-supervised objective: 
+          maximizing the geometric consistency between these two reconstructions relative to the common image \(I_1\). 
+          This ensures the model produces cross-pair consistent outputs, regardless of the inputs. 
+          Extensive experiments demonstrate that our technique significantly outperforms previous state-of-the-art methods on the 3D reconstruction and multi-view depth estimation tasks. 
+          Moreover, it is universally applicable and nearly cost-free, making it easily applied to other models and implemented with minimal test-time training overhead and parameter footprint.
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+  </div>
+</section>
+
+<!-- 
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Methods</h2>
+    <!-- <h2 class="title is-4">N3V Dataset</h2> -->
+      <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/pipeline.svg" width="80%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div>
+      <p>
+      The primary goal of Test3R is to adapt a pretrained reconstruction model \(f_{s}\) to the specific distribution of test scenes \(f_{t}\). 
+      It achieves this goal by optimizing a set of visual prompts at test time through a self-supervised training objective that maximizes cross-pair consistency between \(X_1^{ref, ref}\) and \(X_2^{ref, ref}\).
+      </p>
+      <!-- <h2 class="title is-4">D-NeRF Dataset</h2> -->
+      <!-- <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/dnerf.svg" width="100%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div> -->
+</section>
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Qualitative Results</h2>
+  <div class="cards-container">
+  <div class="card">
+    <div class="label">DUSt3R</div>
+    <model-viewer src="static/glb/Barn-dust3r.glb"
+                  alt="3D model"
+                  auto-rotate
+                  camera-controls
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
+                  disable-zoom>
+    </model-viewer>
+  </div>
+
+  <div class="card">
+    <div class="label">Test3R</div>
+    <model-viewer src="static/glb/Barn-ours.glb"
+                  alt="3D model"
+                  auto-rotate
+                  camera-controls
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
+                  disable-zoom>
+    </model-viewer>
+  </div>
+  <div class="card">
+    <div class="label">DUSt3R</div>
+    <model-viewer src="static/glb/facade-dust3r.glb"
+                  alt="3D model"
+                  camera-orbit="0deg 135deg 21m"
+                  auto-rotate
+                  camera-controls
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
+                  disable-zoom>
+    </model-viewer>
+  </div>
+
+  <div class="card">
+    <div class="label">Test3R</div>
+    <model-viewer src="static/glb/facade-ours.glb"
+                  alt="3D model"
+                  camera-orbit="0deg 135deg 21m"
+                  auto-rotate
+                  camera-controls
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
+                  disable-zoom>
+    </model-viewer>
+  </div>
+
+  <div class="card">
+    <div class="label">DUSt3R</div>
+    <model-viewer src="static/glb/kitchen-dust3r.glb"
+                  alt="3D model"
+                  camera-orbit="180deg 90deg 21m"
+                  auto-rotate
+                  camera-controls
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
+                  disable-zoom>
+    </model-viewer>
+  </div>
+
+  <div class="card">
+    <div class="label">Test3R</div>
+    <model-viewer src="static/glb/kitchen-ours.glb"
+                  alt="3D model"
+                  camera-orbit="180deg 90deg 21m"
+                  auto-rotate
+                  camera-controls
+                  interaction-prompt="none"
+                  shadow-intensity="1"
+                  exposure="1"
+                  environment-image="neutral"
+                  disable-zoom>
+    </model-viewer>
+  </div>
+</section>
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Quantitative Results</h2>
+    <!-- <h2 class="title is-4">N3V Dataset</h2> -->
+      <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/quan.svg" width="80%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div>
+    <!-- <h2 class="title is-4">D-NeRF Dataset</h2> -->
+      <!-- <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/dnerf.svg" width="100%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div> -->
+</section>
+<!-- <section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Related Links</h2> -->
+<!-- <section class="section" id="Related Links">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Related Links</h2> -->
+    <!-- <div class="content has-text-justified">
+          <p>
+            Welcome to also check out these awesome related works, including but not limited to:
+          </p>
+          <p>
+
+          <ul>
+            <li><a href="https://arxiv.org/abs/2312.14132">DUSt3R: Geometric 3D Vision Made Easy</a>
+            </li>
+
+            <li><a href="https://arxiv.org/abs/2410.03825">MonST3R: A Simple Approach for Estimating Geometry in the Presence of Motion</a>
+            </li>
+
+            <li><a href="https://arxiv.org/abs/2406.09756">Grounding Image Matching in 3D with MASt3R</a>
+            </li>
+
+            <li><a href="https://arxiv.org/abs/2501.12387">Continuous 3D Perception Model with Persistent State</a>
+            </li>
+
+            <li><a href="https://arxiv.org/abs/2501.13928">Fast3R: Towards 3D Reconstruction of 1000+ Images in One Forward Pass</a>
+            </li>
+
+            <li><a href="https://arxiv.org/abs/2503.11651">VGGT: Visual Geometry Grounded Transformer</a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Concurrent Work. -->
+
+  <!-- </div>
+</section> -->
+
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{park2021nerfies,
+  author    = {Park, Keunhong and Sinha, Utkarsh and Barron, Jonathan T. and Bouaziz, Sofien and Goldman, Dan B and Seitz, Steven M. and Martin-Brualla, Ricardo},
+  title     = {Nerfies: Deformable Neural Radiance Fields},
+  journal   = {ICCV},
+  year      = {2021},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
