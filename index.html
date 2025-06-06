@@ -224,14 +224,27 @@ model-viewer {
   </div>
 </section> -->
 
-<section class="section">
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%"
+       style="border: 4px solid #333; border-radius: 8px;">
+  <source src="./static/videos/Test3R.mp4" type="video/mp4">
+</video>   
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section" style="position: relative; top: -20px;">
   <div class="container is-max-desktop">
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          Dense matching methods like DUST3R regress pairwise pointmaps for 3D reconstruction. 
+          Dense matching methods like DUStt3R regress pairwise pointmaps for 3D reconstruction. 
           However, the reliance on pairwise prediction and the limited generalization capability inherently restrict the global geometric consistency. 
           In this work, we introduce <b>Test3R</b>, a surprisingly simple test-time learning technique that significantly boosts geometric accuracy. 
           Using image triplets \((I_1,I_2,I_3\)), Test3R generates reconstructions from pairs \((I_1,I_2\)) and \((I_1,I_3\)). 
@@ -306,7 +319,7 @@ model-viewer {
   </div>
 </section> -->
 
-<section class="section">
+<section class="section" style="position: relative; top: -50px;">
   <div class="container is-max-desktop">
     <h2 class="title is-3">Methods</h2>
     <!-- <h2 class="title is-4">N3V Dataset</h2> -->
@@ -327,7 +340,7 @@ model-viewer {
       </div> -->
 </section>
 
-<section class="section">
+<section class="section" style="position: relative; top: -100px;">
   <div class="container is-max-desktop">
     <h2 class="title is-3">Quantitative Results</h2>
     <!-- <h2 class="title is-4">N3V Dataset</h2> -->
@@ -345,13 +358,32 @@ model-viewer {
 </section>
 
 <section class="section">
-  <div class="container is-max-desktop">
+  <div class="container is-max-desktop" style="position: relative; top: -150px;">
+    <h2 class="title is-3">Comparison on cross-pair consistency</h2>
+    
+    <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/test3r_consistency.svg" width="100%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div>
+      <p>We visualize the pointmaps of the same reference view but paired with different source views. 
+      Compared to vanilla DUSt3R, Test3R demonstrates superior consistency across different pairs. 
+      The depthmaps predicted by DUSt3R exhibit significant inconsistencies in regions with limited overlap. 
+      After optimizing by cross-pairs consistency objective, Test3R generates consistent and reliable depth predictions in these regions. 
+      Moreover, even in the \((I^{ref}, I^{ref})\) pair case, Test3R can still predict relatively consistent depth maps.</p>
+      <br>
     <h2 class="title is-3">Qualitative Results</h2>
   <div class="cards-container">
+    <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/page_vis.svg" width="100%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div>
   <div class="card">
     <div class="label">DUSt3R</div>
     <model-viewer src="static/glb/Barn-dust3r.glb"
                   alt="3D model"
+                  camera-orbit="0deg 135deg 21m"
                   auto-rotate
                   camera-controls
                   interaction-prompt="none"
@@ -361,11 +393,12 @@ model-viewer {
                   disable-zoom>
     </model-viewer>
   </div>
-
+  
   <div class="card">
     <div class="label">Test3R</div>
     <model-viewer src="static/glb/Barn-ours.glb"
                   alt="3D model"
+                  camera-orbit="0deg 135deg 21m"
                   auto-rotate
                   camera-controls
                   interaction-prompt="none"
@@ -375,6 +408,12 @@ model-viewer {
                   disable-zoom>
     </model-viewer>
   </div>
+  <div style="height: 500px;"></div>
+  <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/page_vis2.svg" width="100%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div>
   <div class="card">
     <div class="label">DUSt3R</div>
     <model-viewer src="static/glb/facade-dust3r.glb"
@@ -404,6 +443,12 @@ model-viewer {
                   disable-zoom>
     </model-viewer>
   </div>
+<!-- 
+  <div class="content has-text-justified">
+        <div class="columns is-centered">
+          <img src="./static/images/page_vis3.svg" width="100%" class="interpolation-image" alt="Interpolation end reference image.">
+        </div>
+      </div>
 
   <div class="card">
     <div class="label">DUSt3R</div>
@@ -433,7 +478,7 @@ model-viewer {
                   environment-image="neutral"
                   disable-zoom>
     </model-viewer>
-  </div>
+  </div> -->
 </section>
 
 <!-- <section class="section">
@@ -478,7 +523,7 @@ model-viewer {
 
 
 
-<section class="section" id="BibTeX">
+<section class="section" id="BibTeX" style="position: relative; top: -120px;">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
     <pre><code>@article{park2021nerfies,
